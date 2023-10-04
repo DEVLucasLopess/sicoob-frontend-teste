@@ -1,15 +1,22 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { maskCep } from '../utils/cepMask';
 import './CepSearch.css'
+import { useHttp } from '../hooks/useHttp';
 
 function CepSearch() {
   const [cep, setCep] = useState('');
   const [address, setAddress] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
+  const { get } = useHttp()
 
   const searchCep = async () => {
+    if(!cep || cep.length < 9) {
+      setToastMessage('Formato de CEP invalido');
+      return
+    }
+
     try {
-      const response = await axios.get(`http://localhost:3001/address/${cep}`);
+      const response = await get(`/address/${cep}`);
       setAddress(response.data);
     } catch (error) { 
       if (error.response && error.response.status === 404) {
@@ -20,13 +27,6 @@ function CepSearch() {
       setAddress(null);
     }
   };
-
-  function maskCep(value) {
-    return value
-      .replace(/\D/g, '')
-      .replace(/(\d{5})(\d)/, '$1-$2')
-      .substring(0, 9);    
-  }
 
   return (
     <div className='search-container'>
@@ -44,6 +44,7 @@ function CepSearch() {
         />
         <button onClick={searchCep} disabled={!cep}>Pesquisar</button>
       </div>
+
       {address && (
         <div className="address-container">
           <p><span className='address-info'>Logradouro:</span> {address.logradouro}</p>
@@ -51,6 +52,7 @@ function CepSearch() {
           <p><span className='address-info'>Município:</span> {address.localidade}</p>
         </div>
       )}
+
       {toastMessage && (
         <div className="toast">
             {toastMessage}
