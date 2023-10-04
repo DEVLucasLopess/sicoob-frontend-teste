@@ -7,4 +7,4 @@ Abrir a pasta do projeto no terminal e instalar as dependencias:
 Iniciar o backend:
 - npm run dev
 
-Obs: Abra no navegador o endereço para rodar o front-end: http://127.0.0.1:5173/
+Obs: Abra no navegador o endereço para rodar o front-end: http:localhost:5173

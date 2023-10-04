@@ -1,23 +1,22 @@
 import { useState } from 'react';
 import axios from 'axios';
-
+import './CepSearch.css'
 
 function CepSearch() {
-  const [cep, setCep] = useState('');  // Estado para armazenar o valor do CEP
-  const [address, setAddress] = useState(null);  // Estado para armazenar o endereço retornado
+  const [cep, setCep] = useState('');
+  const [address, setAddress] = useState(null);
+  const [toastMessage, setToastMessage] = useState(null);
 
   const searchCep = async () => {
     try {
-      // Faça a requisição para o backend utilizando o valor do CEP
       const response = await axios.get(`http://localhost:3001/address/${cep}`);
       setAddress(response.data);
     } catch (error) { 
       if (error.response && error.response.status === 404) {
-        alert('O CEP não foi encontrado');
+        setToastMessage('Formato de CEP invalido');
       } else {
-        alert('Ocorreu um erro ao buscar dados.' + error);
+        setToastMessage('Ocorreu um erro ao buscar dados.');
       }
-      console.error("Error fetching CEP:", error);
       setAddress(null);
     }
   };
@@ -30,24 +29,32 @@ function CepSearch() {
   }
 
   return (
-    <div>
-      <input 
-        value={cep} 
-        onChange={(e) => {
-          const maskedValue = maskCep(e.target.value);
-          setCep(maskedValue);
-        }} 
-        placeholder="Enter CEP" 
-        maxLength={9}
-        required={true}
-      />
-      <button onClick={searchCep}>Search</button>
+    <div className='search-container'>
+      <div className='input-end-button-container'>
+        <input 
+          className='input-text'
+          value={cep} 
+          onChange={(e) => {
+            const maskedValue = maskCep(e.target.value);
+            setCep(maskedValue);
+          }} 
+          placeholder="Digite ..." 
+          maxLength={9}
+          required={true}
+        />
+        <button onClick={searchCep} disabled={!cep}>Pesquisar</button>
+      </div>
       {address && (
-        <div>
-          <p>{address.logradouro}</p>
-          <p>{address.bairro}</p>
-          <p>{address.localidade}</p>
-          {/* Adicione outros campos do endereço conforme necessário */}
+        <div className="address-container">
+          <p><span className='address-info'>Logradouro:</span> {address.logradouro}</p>
+          <p><span className='address-info'>Bairro:</span> {address.bairro}</p>
+          <p><span className='address-info'>Município:</span> {address.localidade}</p>
+        </div>
+      )}
+      {toastMessage && (
+        <div className="toast">
+            {toastMessage}
+            <button className='button-toast-error' onClick={() => setToastMessage(null)}>X</button>
         </div>
       )}
     </div>

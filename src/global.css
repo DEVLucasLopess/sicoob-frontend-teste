@@ -1,0 +1,32 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+    font-size: 50px;
+    margin: 20px;
+    font-weight: bold;
+}
+
+@media (max-width: 1400px) {
+    .title {
+        font-size: 25px;
+    }
+}
+
+.img {
+    width: 350px;
+}
+
+@media (max-width: 1400px) {
+    .img {
+        width: 70%;
+    }
+}
+
+*{
+    font-family: sora
+}
